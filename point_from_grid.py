@@ -6,11 +6,12 @@ from osgeo import osr
 
 
 def get_file_info(in_file_path):
-    '''
+    """
 
+    :return:
     :param in_file_path:
     :return: 数据集，地理坐标，投影坐标，栅格
-    '''
+    """
     #
 
     pcs = None
@@ -62,9 +63,9 @@ def rowcol_to_xy(extend, row, col):
     return x, y
 
 
-def get_value_by_coordinates(file_path, coordinates, coordinates_type="lonlat"):
+def get_value_by_coordinates(file_path, coordinates,band, coordinates_type="lonlat"):
     dataset, gcs, pcs, extend, shape = get_file_info(file_path)
-    img = dataset.GetRasterBand(1).ReadAsArray()
+    img = dataset.GetRasterBand(band).ReadAsArray()
     value = None
 
     if coordinates_type == 'rowcol':
