@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
-
+from sklearn.svm import SVR
 
 try:
     from osgeo import ogr
@@ -34,7 +34,8 @@ def display_as_ROC(y_pred, y_test, title):
 
 
 def fit(fit_range='station', fit_method='numpy'):
-    data = pd.read_csv('/Users/zzl/PycharmProjects/PyModis/station-grid copy.csv')
+    # data = pd.read_csv('/Users/zzl/PycharmProjects/PyModis/staion-grid-withlanlon-data.csv') # mac path
+    data = pd.read_csv('D:\\abakane1\\PyModis\\staion-grid-withlanlon-data.csv')
     data = data[(data['grid_value'] < 500) & (data['station_value'] < 500) & (data['grid_value'] > 0) & (
             data['station_value'] > 0)]
     if fit_range == 'station':
@@ -110,5 +111,36 @@ def multi_linear_fit(x, y):
     print(a, b, RMSE, R2)
     return a, b, RMSE, R2
 
+# 支持向量回归
+def svm_linear_fit():
+    data = pd.read_csv('D:\\abakane1\\PyModis\\staion-grid-withlanlon-data.csv')
+    data = data[(data['grid_value'] < 500) & (data['station_value'] < 500) & (data['grid_value'] > 0) & (
+            data['station_value'] > 0)]
+    X = data['grid_value'].values
+    X = np.array(X).reshape(-1, 1)
+    y = data['station_value'].values
+    ###############################################################################
+    # Fit regression model
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    svr_lin = SVR(kernel='linear', C=1e3)
+    svr_poly = SVR(kernel='poly', C=1e3, degree=2)
+    y_rbf = svr_rbf.fit(X, y).predict(X)
+    y_lin = svr_lin.fit(X, y).predict(X)
+    y_poly = svr_poly.fit(X, y).predict(X)
 
-#a, b, RMSE, R2 = fit(fit_range='station', fit_method='numpy')
+    ###############################################################################
+    # look at the results
+    lw = 2
+    plt.scatter(X, y, color='darkorange', label='data')
+    #plt.hold('on')
+    plt.plot(X, y_rbf, color='navy', lw=lw, label='RBF model')
+    plt.plot(X, y_lin, color='c', lw=lw, label='Linear model')
+    plt.plot(X, y_poly, color='cornflowerblue', lw=lw, label='Polynomial model')
+    plt.xlabel('data')
+    plt.ylabel('target')
+    plt.title('Support Vector Regression')
+    plt.legend()
+
+
+# a, b, RMSE, R2 = fit(fit_range='station', fit_method='numpy')
+svm_linear_fit()
