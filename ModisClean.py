@@ -15,8 +15,6 @@ try:
     from osgeo import ogr
 except:
     import ogr
-import matplotlib
-import pyhdf.SD as hdf
 
 
 # todo 整体重构-功能模块太多了，要拆分
@@ -438,7 +436,10 @@ def pre_processing(root_path):
 
 
 if __name__ == "__main__":
-    root_path = "/Volumes/Data/newmosicData/"
+    # Macos
+    # root_path = "/Volumes/Data/newmosicData/"
+    # Windows
+    root_path = "E:\\newmosicData"
     # starttime = datetime.datetime.now()
 
     # 对原始数据进行统计分析部分
@@ -462,7 +463,7 @@ if __name__ == "__main__":
     # print((endtime - starttime).seconds)
 
     # 拟合
-    Fit()
+    # Fit()
 
     # begin_year = 2003
     # end_year = 2015
