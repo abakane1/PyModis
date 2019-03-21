@@ -17,7 +17,7 @@ except:
 
 # todo 整体重构-功能模块太多了，要拆分
 
-
+# 因为Modis数据是按照一年的天数去存，而气象站点是按照日期去存
 def get_station_value_by_num_day(year, daydir, StationID):
     now_time = datetime.datetime(int(year), int('01'), int('01'))
     f = now_time + datetime.timedelta(days=int(daydir) - 1)
@@ -44,7 +44,7 @@ def Statics(amount_data, year):
 
 
 def get_grid_value_by_station_value(filename, year, daydir):
-    band = 2
+    band = 2 # 1是白天，2是晚上
     lonlatlist = pd.read_csv('/Users/zzl/PycharmProjects/PyModis/HSstation.csv')
     for index, lonlatdata in lonlatlist.iterrows():
         lon = float(lonlatdata['Longitude'])
@@ -70,6 +70,10 @@ def every_station(root_path, year):
                         #set_grid_value_by_linear(filename, year, daydir, 0.97116201, 4.834814562769491)
 
 
+# todo 20190321 确认bug 修改
+#  目前这个函数的逻辑是错误的，正确的业务应该应该
+#  1：根据每一个grid value的值生成一个新的station value
+#  2：最后生成一幅新的tif为完整的气温数据
 def set_grid_value_by_linear(filename, year, daydir, a, b):
     data = pd.read_csv('/Users/zzl/PycharmProjects/PyModis/staion-grid-withlanlon.csv')
     now_time = datetime.datetime(int(year), int('01'), int('01'))
