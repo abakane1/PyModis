@@ -78,3 +78,11 @@ def write_img(filename, im_proj, im_geotrans, b):
             dataset.GetRasterBand(i + 1).WriteArray(b[i])
 
     del dataset
+
+# 结果，存储为txt，分隔号为，
+def write_txt(filename, row):
+    # 以写的方式打开文件，如果文件不存在，就会自动创建
+    file_write_obj = open(filename, 'a')
+    file_write_obj.writelines(row)
+    file_write_obj.write('\n')
+    file_write_obj.close()

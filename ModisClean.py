@@ -6,7 +6,7 @@ import datetime
 import matplotlib.pyplot as plt
 import point_from_grid as pfg
 import pandas as pd
-import Modis_Fit, Modis_IO, Modis_Display
+import Modis_Fit, Modis_IO, Modis_Display,Modis_fill
 import time
 
 try:
@@ -24,7 +24,7 @@ def get_station_value_by_num_day(year, daydir, StationID):
     fu = f.strftime('%Y%m%d')
     month = f.month
     day = f.day
-    data = pd.read_csv('/Users/zzl/PycharmProjects/PyModis/stationdata.csv')
+    data = pd.read_csv('stationdata.csv')
     station_value = data[(data['Year'] == int(year)) & (data['Months'] == int(month)) & (data['Days'] == int(day)) & (
             data['StationID'] == StationID)].head()
     try:
@@ -42,20 +42,23 @@ def Statics(amount_data, year):
     print(year + 'std', np.nanstd(amount_data))
     # print(np.histogram(amountData, bins=62, range=[0, 60],normed= False))
 
+# band # 1是白天，2是晚上
+# 读取一幅影像，找到上面所有的点
+def get_grid_value_by_station_value(filename, year, day, band):
 
-def get_grid_value_by_station_value(filename, year, daydir):
-    band = 2 # 1是白天，2是晚上
-    lonlatlist = pd.read_csv('/Users/zzl/PycharmProjects/PyModis/HSstation.csv')
+    lonlatlist = pd.read_csv('HSstation.csv')
     for index, lonlatdata in lonlatlist.iterrows():
         lon = float(lonlatdata['Longitude'])
         lat = float(lonlatdata['Latitude'])
         StationID = lonlatdata['StationID']
         value = pfg.get_value_by_coordinates(filename, [lon, lat], band)
         tem_value = 0.02 * value - 273.15
-        daydir1, station_high_value = get_station_value_by_num_day(year, daydir, StationID)
-        print(str(StationID) + ',' + str(year) + ',' + daydir1 + ',', tem_value, ',', station_high_value)
+        date, station_high_value = get_station_value_by_num_day(year, day, StationID)
+        row = str(StationID) + ',' + str(year) + ',' + str(date) + ',', str(tem_value), ',', str(station_high_value)
+        Modis_IO.write_txt("result.txt", row)
+        print(row)
 
-
+# 读取每一景的信息
 def every_station(root_path, year):
     result_filename = 'result.tif'
     data_path = root_path + 'mosic' + year + '/'
@@ -66,7 +69,7 @@ def every_station(root_path, year):
                 for LST in files:
                     if LST == result_filename:
                         filename = rootPaths + "/" + LST
-                        get_grid_value_by_station_value(filename, year, daydir)
+                        get_grid_value_by_station_value(filename, year, daydir, band=2) # 存储的dir就是天数
                         #set_grid_value_by_linear(filename, year, daydir, 0.97116201, 4.834814562769491)
 
 
@@ -155,104 +158,14 @@ def results(root_path, year):
 
 
 
-# 多年趋势补全
-def multi_year_processing(root_path, begin_year, end_year):
-    begin_day = 152
-    end_day = 245
-    day_band = 1  # 14:00
-    nigh_tband = 2  # 02:00
-    im_proj = None
-    im_geotrans = None
 
-    for day in range(begin_day, end_day):
-        im_data_list = []
-        file_path_list = []
-        for year in range(begin_year, end_year + 1):
-            file_path = root_path + 'mosic' + str(year) + '/' + str(day)
-            filename = file_path + '/result_year_day.tif'
-
-            if os.path.exists(filename):
-                im_data, im_geotrans, im_proj = Modis_IO.read_img(filename, day_band)
-                im_data = im_data.flatten()
-                im_data_list.append(im_data)
-                file_path_list.append(file_path)
-
-        # 填补 - 前后年平均
-        im_data_list = np.transpose(im_data_list)
-        col_num = im_data_list.shape[0]
-        fill_num = 0
-        for col in range(0, col_num):  # 逐行读取
-        #num = np.isnan(im_data_list[col]).sum()
-        #if num < im_data_list.shape[1]:
-            row = im_data_list[col]
-            for index in range(1, im_data_list.shape[1] - 2):
-                if (row[index - 1] > 0) & (row[index + 1] > 0):
-                    row[index] = (row[index - 1] + row[index + 1]) / 2
-                    fill_num = fill_num + 1
-                        # print(fill_num)
-        # 存入
-        im_data_list = np.transpose(im_data_list)
-        for col in range(0, im_data_list.shape[0]):
-            im_data = np.array(im_data_list[col]).reshape(1195, 2213)
-            result_filename = file_path_list[col] + '/result_year_day.tif'
-            Modis_IO.write_img(result_filename, im_proj, im_geotrans, im_data)
-            print(result_filename + ' done')
-
-
-# 多年趋势补全-同年
-def multi_day_processing(root_path, begin_year, end_year):
-    begin_day = 152
-    end_day = 245
-    day_band = 1  # 14:00
-    nigh_tband = 2  # 02:00
-    im_proj = None
-    im_geotrans = None
-
-    for year in range(begin_year, end_year+1):
-        im_data_list = []
-        file_path_list = []
-        for day in range(begin_day, end_day):
-            file_path = root_path + 'mosic' + str(year) + '/' + str(day)
-            filename = file_path + '/result_year_day.tif'
-
-            if os.path.exists(filename):
-                im_data, im_geotrans, im_proj = Modis_IO.read_img(filename, day_band)
-                im_data = im_data.flatten()
-                im_data_list.append(im_data)
-                file_path_list.append(file_path)
-
-        # 填补 - 前后日平均
-        im_data_list = np.transpose(im_data_list)
-        col_num = im_data_list.shape[0]
-        fill_num = 0
-        for col in range(0, col_num):  # 逐行读取
-            #num = np.isnan(im_data_list[col]).sum()
-            #if num < im_data_list.shape[1]:
-            row = im_data_list[col]
-            for index in range(1, im_data_list.shape[1] - 2):
-                if (row[index - 1] > 0) & (row[index + 1] > 0):
-                    row[index] = (row[index - 1] + row[index + 1]) / 2
-                    fill_num = fill_num + 1
-                        # print(fill_num)
-        # 存入
-        im_data_list = np.transpose(im_data_list)
-        for col in range(0, im_data_list.shape[0]):
-            im_data = np.array(im_data_list[col]).reshape(1195, 2213)
-            result_filename = file_path_list[col] + '/result_year_day.tif'
-            Modis_IO.write_img(result_filename, im_proj, im_geotrans, im_data)
-            print(result_filename + ' done')
-
-
-# 各种数据补全的思路
-def pre_processing(root_path):
-    begin_year = 2009
-    end_year = 2009
-    multi_year_processing(root_path,begin_year,end_year)
-    multi_day_processing(root_path, begin_year, end_year)
 
 
 if __name__ == "__main__":
-    root_path = "/Volumes/Data/newmosicData/"
+    # MacOS
+    # root_path = "/Volumes/Data/newmosicData/"
+    # Windows
+    root_path = "E:\\newmosicData\\"
     # starttime = datetime.datetime.now()
 
     # 对原始数据进行统计分析部分
