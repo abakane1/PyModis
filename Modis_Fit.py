@@ -13,7 +13,10 @@ except:
     import ogr
 
 
-def display_as_scatter(x,y):
+def display_as_scatter(data):
+    data = data[(data['grid_value'] < 1000) & (data['station_value'] < 1000) & (data['grid_value'] > -1000) & (data['station_value'] > -1000)]
+    x = data['grid_value'].values
+    y = data['station_value'].values
     plt.xlabel("grid_value")
     plt.ylabel("station_value")
     plt.scatter(x, y)
@@ -142,6 +145,11 @@ def svm_linear_fit():
     plt.legend()
     plt.show()
 
+def funcTest():
+    data_file='G:\\mosicdata\\staion-grid-withlanlon-data-.csv'
+    data = pd.read_csv(data_file)
+    display_as_scatter(data)
 
+funcTest()
 # a, b, RMSE, R2 = fit(fit_range='station', fit_method='numpy')
 #svm_linear_fit()
