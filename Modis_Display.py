@@ -31,7 +31,7 @@ def DisAsHist(amountData, year):
 def DisAsImage(amount_data, year, im_geotrans, im_proj):
     # todo 增加叠加矢量，转投影
     #driver = ogr.GetDriverByName('ESRI Shapefile')
-    #county_shp = '/Volumes/Data/county/黄淮海县域.shp'
+    #county_shp = '/volumes/data/county/黄淮海县域.shp'
     #dataSource = driver.Open(county_shp, 0)
     #if dataSource is None:
     #    print('could not open')

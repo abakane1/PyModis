@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 from sklearn.svm import SVR
+import Common_func,Modis_IO
+import point_from_grid as pfg
 
 try:
     from osgeo import ogr
@@ -13,10 +15,7 @@ except:
     import ogr
 
 
-def display_as_scatter(data):
-    data = data[(data['grid_value'] < 1000) & (data['station_value'] < 1000) & (data['grid_value'] > -1000) & (data['station_value'] > -1000)]
-    x = data['grid_value'].values
-    y = data['station_value'].values
+def display_as_scatter(x,y):
     plt.xlabel("grid_value")
     plt.ylabel("station_value")
     plt.scatter(x, y)
@@ -115,13 +114,8 @@ def multi_linear_fit(x, y):
     return a, b, RMSE, R2
 
 # 支持向量回归
-def svm_linear_fit():
-    data = pd.read_csv('D:\\abakane1\\PyModis\\staion-grid-withlanlon-data.csv')
-    data = data[(data['grid_value'] < 500) & (data['station_value'] < 500) & (data['grid_value'] > 0) & (
-            data['station_value'] > 0)]
-    X = data['grid_value'].values
+def svm_linear_fit(X,y):
     X = np.array(X).reshape(-1, 1)
-    y = data['station_value'].values
     ###############################################################################
     # Fit regression model
     svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
@@ -147,21 +141,28 @@ def svm_linear_fit():
 
 
 
-#  20190321 确认bug 修改
-#  1：根据每一个grid value的值生成一个新的station value
+#  20190321 修改
+#  1：根据每一个grid value的值model生成一个新的station value
 #  2：最后生成一幅新的tif为完整的气温数据
-def set_grid_value_by_model(filename, year, daydir, model='linear'):
-    data_station_date = data[(data['date'] == int(date)) & (data['grid_value'] < 0) & (data['station_value'] > 0)]
-    data_station_date['grid_value'] = (a * data_station_date['station_value'] + b + 273.15) / 0.02
-    im_data, im_geotrans, im_proj = pfg.set_value_by_coordinates(filename, data_station_date)
-    Modis_IO.write_img(filename, im_proj, im_geotrans, im_data)
+def set_grid_value_by_model(filename, model='linear'):
+     im_data, im_geotrans, im_proj = Modis_IO.read_img(filename,1)
+
+     return im_data, im_geotrans, im_proj
+#    Modis_IO.write_img(filename, im_proj, im_geotrans, im_data)
 
 
 
 def funcTest():
-    data_file='G:\\mosicdata\\staion-grid-withlanlon-data-.csv'
+    root_path = Common_func.UsePlatform()
+    data_file=root_path + 'staion-grid-withlanlon-data-.csv'
     data = pd.read_csv(data_file)
-    display_as_scatter(data)
+    data = data[(data['grid_value'] < 500) & (data['station_value'] < 500) & (data['grid_value'] > 0) & (
+            data['station_value'] > 0)]
+    y = data['grid_value'].values
+    X = data['station_value'].values
+    linear_fit(X,y)
+    #svm_linear_fit(X,y)
+    #display_as_scatter(data)
 
 funcTest()
 # a, b, RMSE, R2 = fit(fit_range='station', fit_method='numpy')
