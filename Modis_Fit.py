@@ -145,6 +145,19 @@ def svm_linear_fit():
     plt.legend()
     plt.show()
 
+
+
+#  20190321 确认bug 修改
+#  1：根据每一个grid value的值生成一个新的station value
+#  2：最后生成一幅新的tif为完整的气温数据
+def set_grid_value_by_model(filename, year, daydir, model='linear'):
+    data_station_date = data[(data['date'] == int(date)) & (data['grid_value'] < 0) & (data['station_value'] > 0)]
+    data_station_date['grid_value'] = (a * data_station_date['station_value'] + b + 273.15) / 0.02
+    im_data, im_geotrans, im_proj = pfg.set_value_by_coordinates(filename, data_station_date)
+    Modis_IO.write_img(filename, im_proj, im_geotrans, im_data)
+
+
+
 def funcTest():
     data_file='G:\\mosicdata\\staion-grid-withlanlon-data-.csv'
     data = pd.read_csv(data_file)

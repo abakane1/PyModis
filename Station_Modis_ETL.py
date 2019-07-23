@@ -48,24 +48,6 @@ def get_grid_value_by_station_value(filename, year, day, band):
         print(row)
 
 
-# todo 20190321 确认bug 修改
-#  目前这个函数的逻辑是错误的，正确的业务应该应该
-#  1：根据每一个grid value的值生成一个新的station value
-#  2：最后生成一幅新的tif为完整的气温数据
-def set_grid_value_by_linear(filename, year, daydir, a, b):
-    data = pd.read_csv('/Users/zzl/PycharmProjects/PyModis/staion-grid-withlanlon.csv')
-    now_time = datetime.datetime(int(year), int('01'), int('01'))
-    f = now_time + datetime.timedelta(days=int(daydir) - 1)
-    fu = f.strftime('%Y%m%d')
-    date = str(fu)
-    data_station_date = data[(data['date'] == int(date)) & (data['grid_value'] < 0) & (data['station_value'] > 0)]
-    data_station_date['grid_value'] = (a * data_station_date['station_value'] + b + 273.15) / 0.02
-    im_data, im_geotrans, im_proj = pfg.set_value_by_coordinates(filename, data_station_date)
-    Modis_IO.write_img(filename, im_proj, im_geotrans, im_data)
-
-
-
-
 def funcTest():
     root_path = 'G:\\mosicData\\'
     filename = 'G:\\mosicdata\\mosic2006\\168\\day\\result.tif'
