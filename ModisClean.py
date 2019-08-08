@@ -6,7 +6,7 @@ import datetime
 import matplotlib.pyplot as plt
 import point_from_grid as pfg
 import pandas as pd
-import Modis_Fit, Modis_IO, Modis_Display, Modis_fill
+import Modis_Fit, Modis_IO, Modis_Display, Modis_fill,Station_Modis_ETL, Common_func
 import time
 
 try:
@@ -25,34 +25,42 @@ def Statics(amount_data, year):
     # print(np.histogram(amountData, bins=62, range=[0, 60],normed= False))
 
 
-def EveryPoint(root_path, year, orig_file='result.tif'):
+def EveryPoint(root_path, year, time='day', orig_file='result.tif'):
     """
-    按年便利所有年份的数据
+    按年遍历所有年份的数据
     :param root_path:文件路径
     :param year: 年份
     :return:
     """
     # amount_data = np.zeros((2400, 2400))
-    data_path = root_path + 'mosic' + year + '\\'
+    data_path = root_path + 'mosic' + year + '/'
     amount_data = np.zeros((1221, 2224))
     band = 1
     # amount_data = np.where(amount_data == 0, np.nan, 0)
     pic_num = 0
     im_proj = ''
     im_geotrans = ''
+
     for roots, dir, file in os.walk(data_path):
+        #print (dir)
         for daydir in dir:
-            rootPaths = data_path + daydir + '\\day\\'
+            rootPaths = data_path + daydir + '/'+ time +'/'
+            #print(root_path)
             for root, dirs, files in os.walk(rootPaths):
                 if orig_file in files:
                     filename = rootPaths + orig_file
-                    im_data, im_geotrans, im_proj = Modis_IO.read_img(filename, band)
-                    im_data = np.where(im_data > 0, 1, im_data)
+                    print(filename)
+
+                    Station_Modis_ETL.get_grid_value_by_station_value(root_path, filename,year,daydir,band=1)
+
+
+                    # im_data, im_geotrans, im_proj = Modis_IO.read_img(filename, band)
+                    # im_data = np.where(im_data > 0, 1, im_data)
                     # im_data = np.where(im_data < 0, -1, im_data)
                     # print(np.sum(im_data))
                     # amount_data = np.ma.masked_array(im_data,np.logical_not(im_data))
-                    print(daydir)
-                    amount_data = amount_data + im_data
+                    print(year+":"+ daydir+":"+filename)
+                    #amount_data = amount_data + im_data
                     pic_num = pic_num + 1
 
     # amount_data = np.where(amount_data > 0, amount_data.astype(int), 0)
@@ -94,16 +102,15 @@ def FuncTest():
     # MacOS
     # root_path = "/Volumes/Data/newmosicData/"
     # Windows
-    root_path = "G:\\mosicData\\"
+    root_path = Common_func.UsePlatform()
     starttime = datetime.datetime.now()
-    begin_year = 2003
-    end_year = 2014
+    begin_year = 2016
+    end_year = 2018
     for i in range(begin_year, end_year):
         year = str(i)
-
+        EveryPoint(root_path, year)
     # 计算函数
-    year = str('2009')
-    EveryPoint(root_path, year)
+    # year = str('2005')
     # 统计做图
     # results(root_path, year)
 
@@ -111,8 +118,8 @@ def FuncTest():
     #    every_station(root_path, year)
 
     # 计算时间
-    # endtime = datetime.datetime.now()
-    # print((endtime - starttime).seconds)
+    endtime = datetime.datetime.now()
+    print((endtime - starttime).seconds)
 
     # 拟合
     # Modis_Fit.Fit()
@@ -124,3 +131,5 @@ def FuncTest():
     # multi_linear_fit(2009)
 
     # pre_processing(root_path)
+
+FuncTest()
