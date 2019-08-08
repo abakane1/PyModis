@@ -146,7 +146,9 @@ def svm_linear_fit(X,y):
 #  2：最后生成一幅新的tif为完整的气温数据
 def set_grid_value_by_model(filename, model='linear'):
      im_data, im_geotrans, im_proj = Modis_IO.read_img(filename,1)
-
+     #
+     #
+     #
      return im_data, im_geotrans, im_proj
 #    Modis_IO.write_img(filename, im_proj, im_geotrans, im_data)
 
@@ -161,8 +163,8 @@ def funcTest():
     y = data['grid_value'].values
     X = data['station_value'].values
     linear_fit(X,y)
-    #svm_linear_fit(X,y)
-    #display_as_scatter(data)
+    # #svm_linear_fit(X,y)
+    display_as_scatter(data)
 
 funcTest()
 # a, b, RMSE, R2 = fit(fit_range='station', fit_method='numpy')
