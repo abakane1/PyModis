@@ -33,7 +33,7 @@ def EveryPoint(root_path, year, time='day', orig_file='result.tif'):
     :return:
     """
     # amount_data = np.zeros((2400, 2400))
-    data_path = root_path + 'mosic' + year + '/'
+    data_path = os.path.join(root_path, 'mosic',year)
     amount_data = np.zeros((1221, 2224))
     band = 1
     # amount_data = np.where(amount_data == 0, np.nan, 0)
@@ -44,7 +44,7 @@ def EveryPoint(root_path, year, time='day', orig_file='result.tif'):
     for roots, dir, file in os.walk(data_path):
         #print (dir)
         for daydir in dir:
-            rootPaths = data_path + daydir + '/'+ time +'/'
+            rootPaths = os.path.join(data_path, daydir, time)
             #print(root_path)
             for root, dirs, files in os.walk(rootPaths):
                 if orig_file in files:
