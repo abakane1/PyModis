@@ -10,8 +10,10 @@ def UsePlatform():
     sysstr = platform.system()
     if(sysstr == 'Windows'):
         root_path = 'G:\\mosicData\\'
-    else:
+    if(sysstr =='MacOS'):
         root_path = '/volumes/data/mosicData/'
+    if (sysstr == 'Linux'):
+        root_path = '/home/seedserver/mosicData/'
     #print (root_path)
     return root_path
 
