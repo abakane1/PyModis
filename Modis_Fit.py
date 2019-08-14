@@ -166,6 +166,6 @@ def funcTest():
     # #svm_linear_fit(X,y)
     display_as_scatter(data)
 
-funcTest()
+# funcTest()
 # a, b, RMSE, R2 = fit(fit_range='station', fit_method='numpy')
 #svm_linear_fit()
