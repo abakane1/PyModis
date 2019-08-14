@@ -33,7 +33,7 @@ def EveryPoint(root_path, year, time='day', orig_file='result.tif'):
     :return:
     """
     # amount_data = np.zeros((2400, 2400))
-    data_path = os.path.join(root_path, 'mosic',year)
+    data_path = os.path.join(root_path, 'mosic'+year)
     amount_data = np.zeros((1221, 2224))
     band = 1
     # amount_data = np.where(amount_data == 0, np.nan, 0)
@@ -48,7 +48,7 @@ def EveryPoint(root_path, year, time='day', orig_file='result.tif'):
             #print(root_path)
             for root, dirs, files in os.walk(rootPaths):
                 if orig_file in files:
-                    filename = rootPaths + orig_file
+                    filename = os.path.join(rootPaths,orig_file)
                     print(filename)
 
                     Station_Modis_ETL.get_grid_value_by_station_value(root_path, filename,year,daydir,band=1)
@@ -99,16 +99,13 @@ def results(root_path, year):
 
 
 def FuncTest():
-    # MacOS
-    # root_path = "/Volumes/Data/newmosicData/"
-    # Windows
     root_path = Common_func.UsePlatform()
     starttime = datetime.datetime.now()
-    begin_year = 2016
-    end_year = 2018
+    begin_year = 2018
+    end_year = 2019
     for i in range(begin_year, end_year):
         year = str(i)
-        EveryPoint(root_path, year)
+        EveryPoint(root_path, year,time='day')
     # 计算函数
     # year = str('2005')
     # 统计做图
