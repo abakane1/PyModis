@@ -37,7 +37,7 @@ def get_heat_stress_hours_every_station(root_path, stationID,station_name,lon,la
                 A2 = math.asin((heat_temperature_real-T_min_tomorrow)/(T_max-T_min_tomorrow))
                 heat_stress_hours = (DL+2*p)*(1-(A1+A2)/math.pi)
                 row = str(stationID) + ' ' + station_name + ' ' + str(lon) + ' ' + str(lat) + ' ' + str(year) + ' ' + str(
-                        round(stage_start_day)) + ' ' + str(round(stage_end_day))+' '+ str(day_num)+ ' '+str(heat_temperature_real)+' '+ str(format(heat_stress_hours,'2f'))
+                        round(stage_start_day)) + ' ' + str(round(stage_end_day))+' '+ str(day_num)+ ' '+str(T_max)+' '+ str(format(heat_stress_hours,'2f'))
                 print(row)
                 Modis_IO.write_txt(result_file, row)
             except:
