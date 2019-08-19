@@ -109,4 +109,4 @@ def funTest():
 #get_heat_stress_hours_every_station(root_path, 54909,'定陶',115.55,35.1, 2004, 212, 241,340,'')
 
 
-funTest()
+# funTest()

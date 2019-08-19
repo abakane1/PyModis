@@ -1,6 +1,6 @@
 import platform
 import datetime
-
+import os
 def UsePlatform():
     """
     工作平台包括windows,linux和mac
@@ -45,5 +45,11 @@ def day_num_to_yyyymmdd(year,day_num):
     day = f.day
     fu = f.strftime('%Y%m%d')
     return fu,month, day
+
+# result fils
+
+
+HHH_stations_list = os.path.join(UsePlatform(),'HHHstations.csv')
+cx = os.path.join(UsePlatform(),'stations_cx_back.txt')
 
 
