@@ -4,44 +4,7 @@ import os
 import point_from_grid as pfg
 import Modis_IO
 import math
-
-def get_heat_stress_hours_every_station(root_path, stationID,station_name,lon,lat, year, stage_start_day, stage_end_day, heat_temperature,result_file):
-    #heat_temperature =heat_temperature*10
-    meteo_data = pandas.read_csv(os.path.join(root_path, 'stationdata.csv'))
-    for day_num in range(stage_start_day,stage_end_day):
-        fu, month, day = Common_func.day_num_to_yyyymmdd(year, day_num)
-        heat_days = meteo_data[(meteo_data['StationID'] == stationID) & (meteo_data['Year'] == year) & (
-                meteo_data['Months'] == month) & (meteo_data['Days'] == day) & (
-                                       meteo_data['HighestTemperature'] >= heat_temperature)]
-        if heat_days.empty:
-            print(station_name+' '+str(year)+' ' +str(day_num)+' '+'no heat!')
-            continue
-        else:
-            try:
-                # 高温时长模型实现
-                # 参数 太阳赤纬
-                sun_chiwei  = 0.39795*math.cos(0.98563*(day_num-173))
-                T_max = heat_days['HighestTemperature'].values[0]/10
-                T_min = heat_days['LowestTemperature'].values[0]/10
-                # fix a bug 天数-1 之后转日期，不能直接日-1 会报错
-                fu_next,month_next,day_next = Common_func.day_num_to_yyyymmdd(year,day_num+1)
-                T_min_tomorrow = meteo_data[(meteo_data['StationID'] == stationID) & (meteo_data['Year'] == year) & (
-                    meteo_data['Months'] == month_next) & (meteo_data['Days'] == day_next)]['LowestTemperature'].values[0]/10
-
-                a = math.sin(lat)*math.sin(sun_chiwei)
-                b = math.cos(lat)*math.cos(sun_chiwei)
-                DL = 12* (1+(2/math.pi)*a*(math.sin(a/b)))
-                p = 2
-                heat_temperature_real = heat_temperature/10
-                A1 = math.asin((heat_temperature_real-T_min)/(T_max-T_min))
-                A2 = math.asin((heat_temperature_real-T_min_tomorrow)/(T_max-T_min_tomorrow))
-                heat_stress_hours = (DL+2*p)*(1-(A1+A2)/math.pi)
-                row = str(stationID) + ' ' + station_name + ' ' + str(lon) + ' ' + str(lat) + ' ' + str(year) + ' ' + str(
-                        round(stage_start_day)) + ' ' + str(round(stage_end_day))+' '+ str(day_num)+ ' '+str(T_max)+' '+ str(format(heat_stress_hours,'2f'))
-                print(row)
-                Modis_IO.write_txt(result_file, row)
-            except:
-                continue
+import base_stations_data
 
 
 # todo 定义一个生育期得字典，重构硬编码
@@ -133,7 +96,7 @@ def funTest():
             year = str(i)
             stage_start_day = int(station_stage_list[(station_stage_list['year'] == i) & (station_stage_list['stationID'] == stationID)]['cx_start'].values[0])
             stage_end_day = int(station_stage_list[(station_stage_list['year'] == i) & (station_stage_list['stationID'] == stationID)]['cx_end'].values[0])
-            get_heat_stress_hours_every_station(root_path,stationID,station_name,lon,lat,i,stage_start_day,stage_end_day,340,result_file)
+            base_stations_data.get_heat_stress_hours_every_station(root_path,stationID,station_name,lon,lat,i,stage_start_day,stage_end_day,340,result_file)
 
 
     # data_file =os.path.join(root_path, 'grow_peroid_data', 'grow_period_points.csv')
