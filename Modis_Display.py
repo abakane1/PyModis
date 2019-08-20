@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
+import Common_func,Modis_IO
 import time
 try:
     from osgeo import ogr
@@ -27,19 +28,17 @@ def DisAsHist(amountData, year):
     plt.title(year)
     plt.show()
 
+def count_pecent():
+    im_geotrans = ''
+    im_proj = ''
+    amount_data = np.zeros((1221, 2224))
+    data_path =os.path.join(Common_func.UsePlatform(),'results','nights')
+    for root, dirs,files in os.walk(data_path):
+        for file in files:
+            im_data, im_geotrans, im_proj = Modis_IO.read_img(os.path.join(data_path,file), 1)
+            amount_data = amount_data+im_data
+        amount_data = np.where(amount_data >= 0, (amount_data/16).astype(float), np.nan)
+        np.around(amount_data,decimals=2)
+        Modis_IO.write_img(os.path.join(data_path,'2003-2018.tif'),im_proj,im_geotrans,amount_data)
 
-def DisAsImage(amount_data, year, im_geotrans, im_proj):
-    # todo 增加叠加矢量，转投影
-    #driver = ogr.GetDriverByName('ESRI Shapefile')
-    #county_shp = '/volumes/data/county/黄淮海县域.shp'
-    #dataSource = driver.Open(county_shp, 0)
-    #if dataSource is None:
-    #    print('could not open')
-    #layer = dataSource.GetLayer(0)
-    #n = layer.GetFeatureCount()
-    #print(n)
-    plt.imshow(amount_data)
-    #plt.imshow(county_shp)
-    plt.colorbar()
-    plt.show()
-    #dataSource.Destroy()
+count_pecent()
