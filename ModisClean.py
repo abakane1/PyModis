@@ -51,27 +51,29 @@ def EveryPoint(root_path, year, time='day', orig_file='result.tif'):
                     filename = os.path.join(rootPaths,orig_file)
                     print(filename)
 
-                    Station_Modis_ETL.get_grid_value_by_station_value(root_path, filename,year,daydir,band=1)
+                    # Station_Modis_ETL.get_grid_value_by_station_value(root_path, filename,year,daydir,band=1)
 
-
-                    # im_data, im_geotrans, im_proj = Modis_IO.read_img(filename, band)
-                    # im_data = np.where(im_data > 0, 1, im_data)
-                    # im_data = np.where(im_data < 0, -1, im_data)
-                    # print(np.sum(im_data))
-                    # amount_data = np.ma.masked_array(im_data,np.logical_not(im_data))
-                    print(year+":"+ daydir+":"+filename)
-                    #amount_data = amount_data + im_data
-                    pic_num = pic_num + 1
-
+                    try:
+                        im_data, im_geotrans, im_proj = Modis_IO.read_img(filename, band)
+                        im_data = np.where(im_data > 0, 1, im_data)
+                        # im_data = np.where(im_data < 0, -1, im_data)
+                        # print(np.sum(im_data))
+                        # amount_data = np.ma.masked_array(im_data,np.logical_not(im_data))
+                        # print(year+":"+ daydir+":"+filename)
+                        amount_data = amount_data + im_data
+                        pic_num = pic_num + 1
+                    except:
+                        continue
     # amount_data = np.where(amount_data > 0, amount_data.astype(int), 0)
-    amount_data = np.where(amount_data >= 0, amount_data.astype(int), np.nan)
+    amount_data = np.where(amount_data >= 0, (amount_data/pic_num).astype(float), np.nan)
     # 保存计算结果，不需要每次都计算
-    # Modis_IO.write_img(root_path + 'result/3' + year + result_filename, im_proj, im_geotrans, amount_data)
+    Modis_IO.write_img(os.path.join(root_path,'results','nights',year+'.tif'), im_proj, im_geotrans, amount_data)
     print('days:', pic_num)
 
     # DisAsHist(amount_data)
     # Statics(amount_data)
     # DisAsImage(amount_data)
+
 
 
 def results(root_path, year):
@@ -101,11 +103,11 @@ def results(root_path, year):
 def FuncTest():
     root_path = Common_func.UsePlatform()
     starttime = datetime.datetime.now()
-    begin_year = 2018
+    begin_year = 2003
     end_year = 2019
     for i in range(begin_year, end_year):
         year = str(i)
-        EveryPoint(root_path, year,time='day')
+        EveryPoint(root_path, year,time='night')
     # 计算函数
     # year = str('2005')
     # 统计做图
