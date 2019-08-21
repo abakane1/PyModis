@@ -1,7 +1,6 @@
 import pandas
 import Common_func
 import os
-import point_from_grid as pfg
 import Modis_IO
 import math
 

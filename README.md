@@ -21,5 +21,7 @@ Python and Modis
 #### 20190821
 
 - 8：00 开工 背景音：[【陪你学习】安静地学习两个小时吧](https://www.bilibili.com/video/av29322161/)
-- 10:00 83页 42720字 背景音：[【陪你学习】打开视频，陪你安静地学两小时吧](https://www.bilibili.com/video/av24874688/?spm_id_from=333.788.videocard.1)
-- 11：00 84 43634字
+- 10:00 83,42720 背景音：[【陪你学习】打开视频，陪你安静地学两小时吧](https://www.bilibili.com/video/av24874688/?spm_id_from=333.788.videocard.1)
+- 11：00 84,43634
+- 14：00 开工 [【陪你学习】chill study beats ](https://www.bilibili.com/video/av30741130/?p=2)
+- 15：00 补充实验 84,43534

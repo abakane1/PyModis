@@ -1,16 +1,9 @@
 # coding:utf-8
-from osgeo import gdal
 import os
 import numpy as np
-import datetime
 import matplotlib.pyplot as plt
-import point_from_grid as pfg
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn import metrics
 import Common_func,Modis_IO
-import time
+
 try:
     from osgeo import ogr
 except:
@@ -41,4 +34,4 @@ def count_pecent():
         np.around(amount_data,decimals=2)
         Modis_IO.write_img(os.path.join(data_path,'2003-2018.tif'),im_proj,im_geotrans,amount_data)
 
-count_pecent()
+#count_pecent()

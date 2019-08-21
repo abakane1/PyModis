@@ -1,13 +1,5 @@
 # coding:utf-8
 from osgeo import gdal
-import os
-import numpy as np
-import datetime
-import matplotlib.pyplot as plt
-import point_from_grid as pfg
-import pandas as pd
-import Modis_Fit
-import time
 
 
 # 读图像文件

@@ -1,9 +1,8 @@
 import pandas
 import Common_func
 import os
-import point_from_grid as pfg
+from stations_with_modis import point_from_grid as pfg
 import Modis_IO
-import math
 import base_stations_data
 
 
