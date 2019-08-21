@@ -5,8 +5,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.cluster import KMeans
 from mpl_toolkits.mplot3d import Axes3D
-
-data = pd.read_csv('G:\\staion-grid-withlanlon-data-.csv')
+import Common_func
+import os
+root_path = Common_func.UsePlatform()
+data_path = os.path.join(root_path,'staion-grid-withlanlon-data-.csv')
+data = pd.read_csv(data_path)
 data = data[(data['grid_value'] < 500) & (data['station_value'] < 500) & (data['grid_value'] > 0) & (
             data['station_value'] > 0)]
 cluster_feature = data[['grid_value', 'station_value', 'Elevation']].values
