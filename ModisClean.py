@@ -1,13 +1,9 @@
 # coding:utf-8
-from osgeo import gdal
 import os
 import numpy as np
 import datetime
 import matplotlib.pyplot as plt
-import point_from_grid as pfg
-import pandas as pd
-import Modis_Fit, Modis_IO, Modis_Display, Modis_fill,Station_Modis_ETL, Common_func
-import time
+import Modis_IO, Common_func
 
 try:
     from osgeo import ogr
