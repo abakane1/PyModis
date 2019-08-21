@@ -7,7 +7,6 @@ from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 from sklearn.svm import SVR
 import Common_func,Modis_IO
-import point_from_grid as pfg
 
 try:
     from osgeo import ogr
