@@ -25,3 +25,4 @@ Python and Modis
 - 11：00 84,43634
 - 14：00 开工 [【陪你学习】chill study beats ](https://www.bilibili.com/video/av30741130/?p=2)
 - 15：00 补充实验 84,43534
+- 18：00 收工 84，43561
