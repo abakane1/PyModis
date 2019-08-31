@@ -7,8 +7,11 @@ Python and Modis
 #### Goal
 
 - 100页 10w字
+- [latex 速查](http://www.mohu.org/info/symbols/symbols.htm)
+- [vim cheat sheet](https://vim.rtorr.com/lang/zh_cn)
 
 #### 20190820
+- 
 
 - 8：00-09：00：一生气把附表拿来充字数的都删了，100页4.4w字的论文瞬间变成了76页 3.7w字。
 - 9：00-10：00：实在不知道写什么了。先把个人简历写了，结果发现这些年还是有点成果，开心多了。
@@ -26,3 +29,20 @@ Python and Modis
 - 14：00 开工 [【陪你学习】chill study beats ](https://www.bilibili.com/video/av30741130/?p=2)
 - 15：00 补充实验 84,43534
 - 18：00 收工 84，43561
+
+#### 20190827
+
+- 回家带娃三天，实在是太好玩，后果就是 what fucking thing I am writing。
+
+#### 20190828-20190829
+
+- wow 怀旧服开工，堕落啊！
+
+#### 20190830
+
+- 8:00 开工
+- 9:00 92页 47246
+
+#### 20190831
+
+- 11：30 101页 51029 word 压缩图片之后从400m到了20m，终于又可以写论文了。
