@@ -3,7 +3,7 @@ import Common_func
 import os
 from stations_with_modis import point_from_grid as pfg
 import Modis_IO
-import base_stations_data
+import models.base_stations_data
 
 
 # todo 定义一个生育期得字典，重构硬编码
@@ -95,7 +95,7 @@ def funTest():
             year = str(i)
             stage_start_day = int(station_stage_list[(station_stage_list['year'] == i) & (station_stage_list['stationID'] == stationID)]['cx_start'].values[0])
             stage_end_day = int(station_stage_list[(station_stage_list['year'] == i) & (station_stage_list['stationID'] == stationID)]['cx_end'].values[0])
-            base_stations_data.get_heat_stress_hours_every_station(root_path,stationID,station_name,lon,lat,i,stage_start_day,stage_end_day,340,result_file)
+            models.base_stations_data.get_heat_stress_hours_every_station(root_path,stationID,station_name,lon,lat,i,stage_start_day,stage_end_day,340,result_file)
 
 
     # data_file =os.path.join(root_path, 'grow_peroid_data', 'grow_period_points.csv')
