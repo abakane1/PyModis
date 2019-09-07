@@ -6,7 +6,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 from sklearn.svm import SVR
-import Common_func,Modis_IO
+import Common_func,Modis_IO,stations.Station_ETL
+plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
+plt.rcParams['axes.unicode_minus']=False #用来正常显示负号
 
 try:
     from osgeo import ogr
@@ -14,9 +16,10 @@ except:
     import ogr
 
 
-def display_as_scatter(x,y):
-    plt.xlabel("grid_value")
-    plt.ylabel("station_value")
+def display_as_scatter(x,y,title):
+    plt.xlabel("遥感温度值")
+    plt.ylabel("气象温度值")
+    plt.title(title)
     plt.scatter(x, y)
     plt.show()
 
@@ -82,8 +85,8 @@ def linear_fit(x, y):
     sstot = np.sum((y - ybar) ** 2)  # or sum([ (yi - ybar)**2 for yi in y])
     # print('a:', f1[0], 'b:', f1[1], 'r2:', ssreg / sstot)
     print(f1[0], f1[1], RMSE, ssreg / sstot)
-    display_as_scatter(x, y)
-    return f1[0], f1[1], RMSE, ssreg / sstot
+    #display_as_scatter(x, y)
+    #return f1[0], f1[1], RMSE, ssreg / sstot
 
 
 # 线性回归- sklearn train:test = 8:2
@@ -108,8 +111,8 @@ def multi_linear_fit(x, y):
     RMSE = metrics.mean_absolute_error(y_test, y_pred)
     # print(metrics.mean_squared_error(y_test, y_pred))
     R2 = metrics.r2_score(y_test, y_pred)
-    display_as_scatter(x, y)
-    print(a, b, RMSE, R2)
+    #display_as_scatter(x, y)
+    #print(a, b, RMSE, R2)
     return a, b, RMSE, R2
 
 # 支持向量回归
@@ -155,16 +158,25 @@ def set_grid_value_by_model(filename, model='linear'):
 
 def funcTest():
     root_path = Common_func.UsePlatform()
-    data_file=root_path + 'staion-grid-withlanlon-data-.csv'
-    data = pd.read_csv(data_file)
-    data = data[(data['grid_value'] < 500) & (data['station_value'] < 500) & (data['grid_value'] > 0) & (
-            data['station_value'] > 0)]
-    y = data['grid_value'].values
-    X = data['station_value'].values
-    linear_fit(X,y)
+    data_file=root_path + 'grid_station_night.txt'
+    data = pd.read_csv(data_file,",")
+    data = data[(data['gridval'] > 0) & (data['stationval'] > 0)]
+    X = data['gridval'].values
+    y = data['stationval'].values
+    stationID_list = data['stationID'].unique()
+    title = '黄淮海地区2003-2018年夜间遥感-气象温度散点图'
+    for stationID in stationID_list:
+        lon,lat = stations.Station_ETL.get_lonlat_by_stationID(stationID)
+        station_data = data[data['stationID'] == stationID]
+        station_name = stations.Station_ETL.get_station_name_by_stationID(stationID)
+        X = station_data['gridval'].values
+        y = station_data['stationval'].values
+        a, b, RMSE, R2 = multi_linear_fit(X,y)
+        print (stationID,station_name,lon,lat,R2)
     # #svm_linear_fit(X,y)
-    display_as_scatter(data)
+    #multi_linear_fit(X,y)
+    #display_as_scatter(X,y,title)
 
-# funcTest()
+funcTest()
 # a, b, RMSE, R2 = fit(fit_range='station', fit_method='numpy')
 #svm_linear_fit()
