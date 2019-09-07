@@ -12,6 +12,11 @@ def get_lonlat_by_stationID(stationID):
     lat = station_list[(station_list['StationID'] == stationID)]['Latitude'].values[0]
     return lon,lat
 
+def get_station_name_by_stationID(stationID):
+    station_list = pd.read_csv(os.path.join(root_path, 'HHHstations.csv'))
+    station_name = station_list[(station_list['StationID'] == stationID)]['StationName'].values[0]
+    return station_name
+
 def get_cx_by_stationID(stationID,year):
     cx_data = pd.read_csv(Common_func.cx," ")
     cx_start = cx_data[(cx_data['stationID'] == stationID) & (cx_data['year'] == year)]['cx_start'].values[0]
