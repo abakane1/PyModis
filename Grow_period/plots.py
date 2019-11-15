@@ -13,7 +13,8 @@ def test_fun():
         stationID = int(station_data['StationID'])
         station_name = station_data['StationName']
         stage_ave_start_day = int(cx_data[cx_data['stationID'] == stationID]['cx_start'].mean())
-        print(stationID,station_name,lon,lat,stage_ave_start_day)
+        stage_ave_end_day = int(cx_data[cx_data['stationID'] == stationID]['cx_end'].mean())
+        print(stationID,station_name,lon,lat,stage_ave_start_day,stage_ave_end_day)
 
 
 root_path = Common_func.UsePlatform()
